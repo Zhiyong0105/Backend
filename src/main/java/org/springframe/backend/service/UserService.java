@@ -32,7 +32,6 @@ public class UserService implements IUserService {
             throw new IllegalArgumentException("Username already exists!"); // 或者自定义异常
         }
 
-        // 创建新的用户实体并加密密码
         User userEntity = new User();
         userEntity.setUsername(userDTO.getUsername());
         userEntity.setPassword(passwordEncoder.encode(userDTO.getPassword()));
