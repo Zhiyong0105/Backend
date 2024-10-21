@@ -20,6 +20,7 @@ public enum ResponseEnum {
                 return responseEnum;
             }
         }
+        return ResponseEnum.ERROR;
     }
 
 }

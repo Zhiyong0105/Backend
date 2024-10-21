@@ -37,6 +37,9 @@ public class ResponseResult <T>{
         responseResult.setToken(token);
         return responseResult;
     }
+    public static<T> ResponseResult<T> Success(){
+        return new ResponseResult<T>(ResponseEnum.SUCCESS.getCode(),ResponseEnum.SUCCESS.getMsg(),null);
+    }
     public static<T> ResponseResult<T> SuccessRegister(T data){
         ResponseResult<T> responseResult = new ResponseResult<T>();
         responseResult.setCode(ResponseEnum.SUCCESS.getCode());

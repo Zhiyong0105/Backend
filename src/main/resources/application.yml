@@ -21,8 +21,8 @@ spring:
     jwt:
       key: jwt-key
       expire: 7
-logging:
-  level:
-    root: INFO
-    com.example.UserService: INFO
-    com.example.JwtUtils: INFO
+#logging:
+#  level:
+#    root: INFO
+#    com.example.UserService: INFO
+#    com.example.JwtUtils: INFO

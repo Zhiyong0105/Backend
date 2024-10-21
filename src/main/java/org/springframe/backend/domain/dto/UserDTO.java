@@ -20,7 +20,6 @@ public class UserDTO {
 
     private Integer id;
 
-    @Email
     private String email;
 
 }

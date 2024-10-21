@@ -1,6 +1,7 @@
 package org.springframe.backend.controller;
 
 import org.springframe.backend.domain.dto.UserDTO;
+import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.entity.User;
 import org.springframe.backend.service.UserService;
 import org.springframe.backend.utils.ResponseResult;
@@ -20,19 +21,23 @@ public class UserController {
 
 
 
-    @PostMapping
-    public ResponseResult<User> add(@Validated @RequestBody UserDTO userDTO) {
-        User userAdd = userService.save(userDTO);
-        String token = userService.login(userDTO);
+//    @PostMapping
+//    public ResponseResult<User> add(@Validated @RequestBody UserDTO userDTO) {
+//        User userAdd = userService.save(userDTO);
+//        String token = userService.login(userDTO);
+//
+//        return ResponseResult.Success(userAdd,token);
+//    }
 
-        return ResponseResult.Success(userAdd,token);
-    }
-
-    @PostMapping("/login")
-    public ResponseResult login(@Validated @RequestBody UserDTO userDTO) {
-
-        String token = userService.login(userDTO);
-        return ResponseResult.Success(null,token);
+//    @PostMapping("/login")
+//    public ResponseResult login(@Validated @RequestBody UserDTO userDTO) {
+//
+//        String token = userService.login(userDTO);
+//        return ResponseResult.Success(null,token);
+//    }
+    @PostMapping("/register")
+    public ResponseResult<Void> register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
+        return userService.userRegister(userRegisterDTO);
     }
 
 }
