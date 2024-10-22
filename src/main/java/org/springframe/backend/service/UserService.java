@@ -4,6 +4,7 @@ import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
+import org.springframe.backend.enums.ResponseEnum;
 import org.springframe.backend.repository.UserRepository;
 import org.springframe.backend.service.impl.IUserService;
 import org.springframe.backend.utils.JwtUtils;
@@ -51,6 +52,9 @@ public class UserService implements IUserService {
 
     @Override
     public ResponseResult<Void> userRegister(UserRegisterDTO userRegisterDTO) {
+        if (userIsExist(userRegisterDTO.getUsername(), userRegisterDTO.getPassword())) {
+            return ResponseResult.error(ResponseEnum.USER_EX.getCode(),ResponseEnum.USER_EX.getMsg());
+        }
         String encodedPassword = passwordEncoder.encode(userRegisterDTO.getPassword());
         User user = User.builder()
                 .id(null)
@@ -60,6 +64,9 @@ public class UserService implements IUserService {
                 .build();
         this.save(user);
         return ResponseResult.Success();
+    }
+    public boolean userIsExist(String username, String email) {
+        return userRepository.existsByUsernameOrEmail(username, email);
 
     }
 }

@@ -1,6 +1,7 @@
 package org.springframe.backend.utils;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL) //
 public class ResponseResult <T>{
     private int code;
     private String msg;
@@ -37,20 +39,24 @@ public class ResponseResult <T>{
         responseResult.setToken(token);
         return responseResult;
     }
+
     public static<T> ResponseResult<T> Success(){
         return new ResponseResult<T>(ResponseEnum.SUCCESS.getCode(),ResponseEnum.SUCCESS.getMsg(),null);
     }
+
     public static<T> ResponseResult<T> SuccessRegister(T data){
         ResponseResult<T> responseResult = new ResponseResult<T>();
         responseResult.setCode(ResponseEnum.SUCCESS.getCode());
         responseResult.setData(data);
+
         responseResult.setMsg(ResponseEnum.SUCCESS.getMsg());
         return responseResult;
     }
-    public static<T> ResponseResult<T> error(String msg,Integer code){
+    public static<T> ResponseResult<T> error(Integer code,String msg){
         ResponseResult responseResult = new ResponseResult();
         responseResult.setCode(code);
         responseResult.setMsg(msg);
+        responseResult.setToken(null);
         return responseResult;
 
 
@@ -59,6 +65,7 @@ public class ResponseResult <T>{
         ResponseResult responseResult = new ResponseResult();
         responseResult.setCode(responseEnum.getCode());
         responseResult.setMsg(responseEnum.getMsg());
+        responseResult.setToken(null);
         return responseResult;
     }
     public static<T> ResponseResult<T> LoginError(int code,T data,String msg){

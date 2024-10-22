@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum ResponseEnum {
     SUCCESS(200,"success"),
     FAIL(300,"Fail to get data"),
-    USER_EX(301,"User not exist"),
+    USER_EX(301,"User  exist"),
     ERROR(302,"Error Request"),
     TOKEN_VERIFY_ERROR(401,"Failed token authentication");
     private Integer code;
