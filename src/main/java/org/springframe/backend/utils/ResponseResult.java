@@ -2,6 +2,9 @@ package org.springframe.backend.utils;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -68,9 +71,28 @@ public class ResponseResult <T>{
         responseResult.setToken(null);
         return responseResult;
     }
+
+    public static<T> ResponseResult<T> loginSuccess(T data){
+        ResponseResult responseResult = new ResponseResult();
+
+        responseResult.setData(data);
+        return responseResult;
+    }
+
     public static<T> ResponseResult<T> LoginError(int code,T data,String msg){
         return new ResponseResult<T>(code,msg);
     }
+
+    public String asJsonString(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        try{
+            return objectMapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 

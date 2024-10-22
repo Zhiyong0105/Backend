@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ResponseEnum {
+    LOGIN_SUCCESS(200,"Login success"),
     SUCCESS(200,"success"),
     FAIL(300,"Fail to get data"),
     USER_EX(301,"User  exist"),

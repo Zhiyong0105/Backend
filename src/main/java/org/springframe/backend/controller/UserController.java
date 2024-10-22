@@ -1,5 +1,6 @@
 package org.springframe.backend.controller;
 
+import org.springframe.backend.domain.dto.LoginDTO;
 import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.entity.User;
@@ -38,6 +39,12 @@ public class UserController {
     @PostMapping("/register")
     public ResponseResult<Void> register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
         return userService.userRegister(userRegisterDTO);
+    }
+
+
+    @PostMapping("/login")
+    public ResponseResult login(@RequestBody LoginDTO loginDTO) {
+        return userService.userLogin();
     }
 
 }

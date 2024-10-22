@@ -1,6 +1,8 @@
 package org.springframe.backend.config;
 
+import org.springframe.backend.constants.SecurityConst;
 import org.springframe.backend.filter.JwtAuthorizeFilter;
+import org.springframe.backend.handler.SecurityHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
+
+    @Autowired
+    private SecurityHandler securityHandler;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,8 +34,14 @@ public class SecurityConfig  {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user","user/login").authenticated()
+                        .requestMatchers(SecurityConst.AUTH_CHECK_ARRAY).authenticated()
                         .anyRequest().permitAll()
+                )
+                .formLogin(from -> from
+                        .loginProcessingUrl(SecurityConst.LOGIN)
+                        .successHandler(securityHandler::onAuthenticationSuccess)
+
+
                 )
                 .addFilterBefore(new JwtAuthorizeFilter(), UsernamePasswordAuthenticationFilter.class);
 
