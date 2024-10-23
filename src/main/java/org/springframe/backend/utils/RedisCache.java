@@ -34,6 +34,7 @@ public class RedisCache {
    public <T> T getCacheObject(final String key) {
             ValueOperations<String, T> ops = redisTemplate.opsForValue();
             return ops.get(key);
+
    }
 
    public boolean deleteObject(final String key) {
