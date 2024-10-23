@@ -1,25 +1,19 @@
 package org.springframe.backend.service;
 
 import org.springframe.backend.domain.dto.LoginDTO;
-import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
-import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
 import org.springframe.backend.enums.ResponseEnum;
 import org.springframe.backend.repository.UserRepository;
-import org.springframe.backend.service.impl.IUserService;
+import org.springframe.backend.service.impl.IUserService1;
 import org.springframe.backend.utils.JwtUtils;
 import org.springframe.backend.utils.ResponseResult;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.UUID;
-
 @Service
-public class UserService implements IUserService {
+public class UserService implements IUserService1 {
     @Autowired
     UserRepository userRepository;
 

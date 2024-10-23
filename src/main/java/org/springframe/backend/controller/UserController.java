@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+//@RequestMapping("/user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -36,15 +36,15 @@ public class UserController {
 //        String token = userService.login(userDTO);
 //        return ResponseResult.Success(null,token);
 //    }
-    @PostMapping("/register")
+    @PostMapping("/user/register")
     public ResponseResult<Void> register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
         return userService.userRegister(userRegisterDTO);
     }
 
 
-    @PostMapping("/login")
-    public ResponseResult login(@RequestBody LoginDTO loginDTO) {
-        return userService.userLogin();
-    }
+//    @PostMapping("/login")
+//    public ResponseResult login(@RequestBody LoginDTO loginDTO) {
+//        return userService.userLogin();
+//    }
 
 }

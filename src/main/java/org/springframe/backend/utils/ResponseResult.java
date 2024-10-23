@@ -74,7 +74,7 @@ public class ResponseResult <T>{
 
     public static<T> ResponseResult<T> loginSuccess(T data){
         ResponseResult responseResult = new ResponseResult();
-
+        responseResult.setCode(HttpStatus.OK.value());
         responseResult.setData(data);
         return responseResult;
     }
@@ -83,7 +83,7 @@ public class ResponseResult <T>{
         return new ResponseResult<T>(code,msg);
     }
 
-    public String asJsonString(){
+  public String asJsonString(){
         ObjectMapper objectMapper = new ObjectMapper();
         try{
             return objectMapper.writeValueAsString(this);
@@ -91,7 +91,7 @@ public class ResponseResult <T>{
             e.printStackTrace();
             return null;
         }
-    }
+  }
 
 
 

@@ -12,6 +12,7 @@ public enum ResponseEnum {
     FAIL(300,"Fail to get data"),
     USER_EX(301,"User  exist"),
     ERROR(302,"Error Request"),
+    LOGIN_FAIL(303,"Login fail"),
     TOKEN_VERIFY_ERROR(401,"Failed token authentication");
     private Integer code;
     private String msg;

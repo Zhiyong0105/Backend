@@ -40,6 +40,7 @@ public class SecurityConfig  {
                 .formLogin(from -> from
                         .loginProcessingUrl(SecurityConst.LOGIN)
                         .successHandler(securityHandler::onAuthenticationSuccess)
+                        .failureHandler(securityHandler::onAuthenticationFailure)
 
 
                 )
