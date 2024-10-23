@@ -79,6 +79,13 @@ public class ResponseResult <T>{
         return responseResult;
     }
 
+    public static<T> ResponseResult<T> logoutSuccess(){
+        ResponseResult responseResult = new ResponseResult();
+        responseResult.setCode(ResponseEnum.LOGOUT_SUCCESS.getCode());
+        responseResult.setMsg(ResponseEnum.LOGOUT_SUCCESS.getMsg());
+        return responseResult;
+    }
+
     public static<T> ResponseResult<T> LoginError(int code,T data,String msg){
         return new ResponseResult<T>(code,msg);
     }

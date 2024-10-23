@@ -8,5 +8,5 @@ import java.io.Serializable;
 public class UserVO implements Serializable {
     private Integer userId;
     private String username;
-    private String password;
+//    private String password;
 }

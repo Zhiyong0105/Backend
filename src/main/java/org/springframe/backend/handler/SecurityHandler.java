@@ -29,6 +29,7 @@ public class SecurityHandler {
     ) {
         handlerOnAuthenticationSuccess(request,response,(LoginUser) authentication.getPrincipal());
     }
+
     public void handlerOnAuthenticationSuccess(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -58,5 +59,13 @@ public class SecurityHandler {
             AuthenticationException exception
     )throws IOException {
         WebUtil.renderString(response,ResponseResult.LoginError(ResponseEnum.LOGIN_FAIL.getCode(), null,ResponseEnum.LOGIN_FAIL.getMsg()).asJsonString());
+    }
+
+    public void onLogoutSuccess(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ){
+            WebUtil.renderString(response,ResponseResult.logoutSuccess().asJsonString());
     }
 }

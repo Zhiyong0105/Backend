@@ -14,4 +14,6 @@ public class LoginDTO {
     private Date loginTimeStart;
 
     private Date loginTimeEnd;
+
+
 }

@@ -44,6 +44,12 @@ public class SecurityConfig  {
 
 
                 )
+                .logout( from -> from
+                        .logoutUrl(SecurityConst.LOGOUT)
+                        .logoutSuccessHandler(securityHandler::onLogoutSuccess)
+                        .permitAll()
+
+                )
                 .addFilterBefore(new JwtAuthorizeFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

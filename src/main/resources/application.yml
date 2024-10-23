@@ -21,6 +21,10 @@ spring:
     jwt:
       key: jwt-key
       expire: 7
+#  mvc:
+#    favicon:
+#      enabled: false
+
 #logging:
 #  level:
 #    root: INFO
