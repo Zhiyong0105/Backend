@@ -1,5 +1,7 @@
 package org.springframe.backend.controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframe.backend.domain.dto.LoginDTO;
 import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
@@ -15,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 //@RequestMapping("/user")
-
+@Tag(name = "User Management", description = "Operations related to user management")
 public class UserController {
     @Autowired
     private UserServiceImpl userService;
 
 
-    
+    @ApiResponse(responseCode = "200", description = "Successful operation")
+
     @PostMapping("/user/register")
     public ResponseResult<Void> register(@Validated @RequestBody UserRegisterDTO userRegisterDTO) {
         return userService.userRegister(userRegisterDTO);

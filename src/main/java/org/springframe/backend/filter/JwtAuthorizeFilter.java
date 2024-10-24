@@ -33,7 +33,8 @@ public class JwtAuthorizeFilter extends OncePerRequestFilter {
         }
         String token = authHeader.substring(7);
 
-        DecodedJWT jwt = jwtUtils.getJwt(token);
+//        DecodedJWT jwt = jwtUtils.getJwt(token);
+        DecodedJWT jwt = jwtUtils.resolveJwt(authHeader);
         if(jwt != null){
             String username = jwt.getClaim("username").asString();
 
@@ -46,12 +47,12 @@ public class JwtAuthorizeFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
 
     }
-    private String extractJwtFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+//    private String extractJwtFromRequest(HttpServletRequest request) {
+//        String bearerToken = request.getHeader("Authorization");
+//        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//        return null;
+//    }
 }
 
