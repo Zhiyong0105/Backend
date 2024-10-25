@@ -21,6 +21,11 @@ spring:
     jwt:
       key: jwt-key
       expire: 7
+  data:
+    redis:
+      url: redis://@localhost:6379/0
+      connect-timeout: 6000ms
+
 #  mvc:
 #    favicon:
 #      enabled: false

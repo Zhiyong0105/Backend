@@ -14,6 +14,7 @@ public enum ResponseEnum {
     ERROR(302,"Error Request"),
     LOGIN_FAIL(303,"Login fail"),
     LOGOUT_SUCCESS(304,"Logout success"),
+    LOGOUT_FAIL(303,"Logout fail"),
     TOKEN_VERIFY_ERROR(401,"Failed token authentication");
     private Integer code;
     private String msg;

@@ -66,6 +66,11 @@ public class SecurityHandler {
             HttpServletResponse response,
             Authentication authentication
     ){
-            WebUtil.renderString(response,ResponseResult.logoutSuccess().asJsonString());
+            boolean invalidateJwt = jwtUtils.invaildateJwt(request.getHeader("Authorization"));
+            if (invalidateJwt){
+                WebUtil.renderString(response,ResponseResult.logoutSuccess().asJsonString());
+                return;
+            }
+            WebUtil.renderString(response,ResponseResult.error(ResponseEnum.LOGOUT_FAIL.getCode(),ResponseEnum.LOGOUT_FAIL.getMsg()).asJsonString());
     }
 }

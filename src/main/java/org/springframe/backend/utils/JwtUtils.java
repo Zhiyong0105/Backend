@@ -19,7 +19,9 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtils {
@@ -36,19 +38,40 @@ public class JwtUtils {
 
 
 
+    public boolean invaildateJwt(String headerToken){
+        String token = this.convertToken(headerToken);
+        if(token == null){ return false;}
+        Algorithm algorithm = Algorithm.HMAC256(key);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        try{
+            DecodedJWT jwt = verifier.verify(token);
+            String id = jwt.getId();
+            return  deleteToken(id);
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+    }
 
     public String createJwt(String uuid, UserDetails userDetails, Integer id, String username) {
         Algorithm algorithm = Algorithm.HMAC256(key);
         Date expire = expireTime();
         Date now = new Date();
 
-        return JWT.create()
+         String jwt =  JWT.create()
                 .withJWTId(uuid)
                 .withClaim("id", id)
                 .withClaim("username", username)
                 .withExpiresAt(expire)
                 .withIssuedAt(now)
                 .sign(algorithm);
+         redisCache.setCacheObject(RedisConst.JWT_WHITE_LIST + uuid,jwt,(int) (expire.getTime()- now.getTime()), TimeUnit.MINUTES);
+         return jwt;
+    }
+
+    public boolean deleteToken(String uuid){
+        if(this.isInvalidToken(uuid)){return false;}
+        redisCache.deleteObject(RedisConst.JWT_WHITE_LIST + uuid);
+        return true;
     }
 
     public boolean verifyJwt(String jwt) {
@@ -92,6 +115,14 @@ public class JwtUtils {
         }
 
     }
+//    public Loong toId(DecodedJWT decodedJWT){
+//        Map<String,Claim> claimMap = decodedJWT.getClaims();
+//        return claimMap.get("id").asLong();
+//    }
+//    public UserDetails toUser(DecodedJWT decodedJWT) {
+//        Map<String,Claim> claims = decodedJWT.getClaims();
+//        List<String> listStr = getAu
+//    }
 
 
     public Date expireTime() {
@@ -105,7 +136,7 @@ public class JwtUtils {
     }
 
     private String convertToken(String headerToken) {
-        if (headerToken == null || headerToken.startsWith("Bearer ")) {
+        if (headerToken == null || !headerToken.startsWith("Bearer ")) {
             return null;
         }
         return headerToken.substring(7);
