@@ -42,9 +42,15 @@ public class ResponseResult <T>{
         responseResult.setToken(token);
         return responseResult;
     }
-
+    public static<T> ResponseResult<T> Success(T data){
+        return new ResponseResult<>(ResponseEnum.SUCCESS.getCode(),ResponseEnum.SUCCESS.getMsg(),data);
+    }
     public static<T> ResponseResult<T> Success(){
         return new ResponseResult<T>(ResponseEnum.SUCCESS.getCode(),ResponseEnum.SUCCESS.getMsg(),null);
+    }
+
+    public static<T> ResponseResult<T> Fail(){
+        return new ResponseResult<T>(ResponseEnum.FAIL.getCode(),ResponseEnum.FAIL.getMsg(),null);
     }
 
     public static<T> ResponseResult<T> SuccessRegister(T data){

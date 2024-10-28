@@ -15,6 +15,10 @@ public class RedisCache {
     @Autowired
     public RedisTemplate redisTemplate;
 
+
+    public Long increment(String key, long delta) {
+        return redisTemplate.opsForValue().increment(key, delta);
+    }
     public <T> void setCacheObject(final String key, final T  value) {
         redisTemplate.opsForValue().set(key, value);
     }
