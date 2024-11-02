@@ -62,7 +62,18 @@ public class CommentServiceImpl implements CommentService {
             comment.setChildCommentCount(getChildCommentCount(commentVOs, comment.getId()));
         }).toList();
 
-        return null;
+        Specification<Comment> countSpecification = ((root, query, criteriaBuilder) -> {
+            List<Predicate> countPredicates = new ArrayList<>();
+            countPredicates.add(criteriaBuilder.equal(root.get("type"),type));
+            countPredicates.add(criteriaBuilder.equal(root.get("typeId"),typeId));
+            return criteriaBuilder.and(countPredicates.toArray(new Predicate[0]));
+
+        });
+        long count = commentRepository.count(countSpecification);
+
+        return new PageVo<>(collect,count);
+
+
     }
 
     private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Integer parentId) {
@@ -108,7 +119,13 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseResult<String> userComment(UserCommentDTO userCommentDTO) {
-        return null;
+        Comment comment = new Comment();
+        comment.setCommentContent(userCommentDTO.getCommentContent());
+        comment.setCommentUserId(userCommentDTO.getReplyUserId());
+        comment.setParentId(userCommentDTO.getParentId());
+        User user = userRepository.findById(userCommentDTO.getReplyUserId()).orElse(null);
+        Comment savedComment = commentRepository.save(comment);
+        return ResponseResult.Success();
     }
 
     @Override

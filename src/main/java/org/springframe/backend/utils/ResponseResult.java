@@ -52,6 +52,9 @@ public class ResponseResult <T>{
     public static<T> ResponseResult<T> Fail(){
         return new ResponseResult<T>(ResponseEnum.FAIL.getCode(),ResponseEnum.FAIL.getMsg(),null);
     }
+    public static<T> ResponseResult<T> Fail(Integer code,String msg){
+        return new ResponseResult<T>(code,msg,null);
+    }
 
     public static<T> ResponseResult<T> SuccessRegister(T data){
         ResponseResult<T> responseResult = new ResponseResult<T>();

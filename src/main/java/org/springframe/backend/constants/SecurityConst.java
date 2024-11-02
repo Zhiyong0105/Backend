@@ -7,5 +7,7 @@ public class SecurityConst {
 
     public static final String LOGOUT = "/user/logout";
 
-    public static final String[] AUTH_CHECK_ARRAY = { AUTH_CHECK };
+    public static final String COMMENT_CHECK = "/comment/auth/**";
+
+    public static final String[] AUTH_CHECK_ARRAY = { AUTH_CHECK, COMMENT_CHECK };
 }

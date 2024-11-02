@@ -115,14 +115,6 @@ public class JwtUtils {
         }
 
     }
-//    public Loong toId(DecodedJWT decodedJWT){
-//        Map<String,Claim> claimMap = decodedJWT.getClaims();
-//        return claimMap.get("id").asLong();
-//    }
-//    public UserDetails toUser(DecodedJWT decodedJWT) {
-//        Map<String,Claim> claims = decodedJWT.getClaims();
-//        List<String> listStr = getAu
-//    }
 
 
     public Date expireTime() {

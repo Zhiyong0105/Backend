@@ -47,8 +47,12 @@ public class SecurityConfig  {
                 .logout( from -> from
                         .logoutUrl(SecurityConst.LOGOUT)
                         .logoutSuccessHandler(securityHandler::onLogoutSuccess)
-                        .permitAll()
 
+
+                )
+                .exceptionHandling(from -> from
+                        .authenticationEntryPoint(securityHandler::onUnAuthenticated)
+                        .accessDeniedHandler(securityHandler::onAccessDeny)
                 )
                 .addFilterBefore(new JwtAuthorizeFilter(), UsernamePasswordAuthenticationFilter.class);
 

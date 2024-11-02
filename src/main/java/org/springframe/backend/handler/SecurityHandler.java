@@ -9,6 +9,7 @@ import org.springframe.backend.utils.JwtUtils;
 import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
@@ -59,6 +60,23 @@ public class SecurityHandler {
             AuthenticationException exception
     )throws IOException {
         WebUtil.renderString(response,ResponseResult.LoginError(ResponseEnum.LOGIN_FAIL.getCode(), null,ResponseEnum.LOGIN_FAIL.getMsg()).asJsonString());
+    }
+
+    public void onAccessDeny(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException exception
+    ){
+        WebUtil.renderString(response,ResponseResult.Fail().asJsonString());
+    }
+
+
+    public void onUnAuthenticated(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AuthenticationException exception
+    )throws IOException{
+        WebUtil.renderString(response,ResponseResult.Fail(ResponseEnum.NOT_LOGIN.getCode(), ResponseEnum.NOT_LOGIN.getMsg()).asJsonString());
     }
 
     public void onLogoutSuccess(
