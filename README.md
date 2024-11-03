@@ -16,4 +16,5 @@
     - Article comment
     - Restful style API design
     - Article visited count by redis
+- The project is under active development, with more features and enhancements planned for future updates.
     
