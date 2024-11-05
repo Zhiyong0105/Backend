@@ -7,20 +7,19 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframe.backend.constants.RedisConst;
+import org.springframe.backend.domain.entity.LoginUser;
+import org.springframe.backend.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -31,9 +30,8 @@ public class JwtUtils {
     @Value("${spring.security.jwt.expire}")
     private int expire;
 
-    @Autowired
+    @Resource
     private RedisCache redisCache;
-
 
 
 
@@ -60,7 +58,7 @@ public class JwtUtils {
          String jwt =  JWT.create()
                 .withJWTId(uuid)
                 .withClaim("id", id)
-                .withClaim("username", username)
+                .withClaim("name", username)
                 .withExpiresAt(expire)
                 .withIssuedAt(now)
                 .sign(algorithm);
@@ -114,6 +112,26 @@ public class JwtUtils {
             return null;
         }
 
+    }
+
+
+    public UserDetails toUser(DecodedJWT jwt) {
+        Map<String, Claim> claims = jwt.getClaims();
+
+
+        return new LoginUser()
+                .setUser
+                        (
+                                new User()
+                                        .setUsername(claims.get("name").asString())
+                        )
+                .setPermissions(null);
+
+    }
+
+    public Integer toId(DecodedJWT jwt) {
+        Map<String, Claim> claims = jwt.getClaims();
+        return claims.get("id").asInt();
     }
 
 

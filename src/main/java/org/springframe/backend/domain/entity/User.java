@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.hibernate.validator.constraints.Length;
 
 @Data
@@ -13,6 +14,8 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Accessors(chain = true)
+
 @Table(name = "login_user_db")
 public class User {
 
@@ -22,7 +25,6 @@ public class User {
 
 
     private String username;
-
 
 
     private String password;

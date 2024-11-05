@@ -3,26 +3,31 @@ package org.springframe.backend.domain.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+@Accessors(chain = true)
 
 @NoArgsConstructor
-
 @Data
 public class LoginUser implements UserDetails {
     private User user;
-    private String Username;
+
 
     private List<String> permissions;
 
+    public LoginUser(User user) {
+        this.user = user;
+    }
    public LoginUser(User user, List<String> permissions) {
        this.user = user;
        this.permissions = permissions;
    }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -36,7 +41,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getUsername();
+        return user.getUsername();
     }
 
 

@@ -37,5 +37,10 @@ public class CommentController {
         return commentService.userComment(commentDTO);
     }
 
+    @GetMapping("comment/auth/check")
+    public void check(){
+        System.out.println("check");
+    }
+
 
 }
