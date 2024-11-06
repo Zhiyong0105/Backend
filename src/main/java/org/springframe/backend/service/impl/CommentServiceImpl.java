@@ -10,6 +10,7 @@ import org.springframe.backend.repository.CommentRepository;
 import org.springframe.backend.repository.UserRepository;
 import org.springframe.backend.service.CommentService;
 import org.springframe.backend.utils.ResponseResult;
+import org.springframe.backend.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,47 +33,60 @@ public class CommentServiceImpl implements CommentService {
     private UserRepository userRepository;
     @Override
     public PageVo<List<ArticleCommentVO>> getComment(Integer type, Integer typeId, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum-1, pageSize, Sort.by(Sort.Direction.DESC, "createTime"));
-        Specification<Comment> specification = (root, query, criteriaBuilder) -> {
+        Specification<Comment> parentSpec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            predicates.add(criteriaBuilder.equal(root.get("type"),type));
-            predicates.add(criteriaBuilder.equal(root.get("typeId"),typeId));
+            predicates.add(criteriaBuilder.equal(root.get("type"), type));
+            predicates.add(criteriaBuilder.equal(root.get("typeId"), typeId));
             predicates.add(criteriaBuilder.isNull(root.get("parentId")));
+            query.orderBy(criteriaBuilder.desc(root.get("createTime")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-        Page<Comment> commentPage = commentRepository.findAll(specification,pageable);
+        Pageable pageable = PageRequest.of(pageNum-1,pageSize,Sort.by(Sort.Direction.DESC,"createTime"));
+        Page<Comment> commentPage = commentRepository.findAll(pageable);
         List<Comment> comments = commentPage.getContent();
 
-        Specification<Comment> childSpecification = ((root, query, criteriaBuilder) -> {
-            List<Predicate> childPredicates = new ArrayList<>();
-            childPredicates.add(criteriaBuilder.equal(root.get("type"),type));
-            childPredicates.add(criteriaBuilder.equal(root.get("typeId"),typeId));
-            childPredicates.add(criteriaBuilder.isNull(root.get("parentId")));
-            query.orderBy(criteriaBuilder.asc(root.get("createTime")));
-            return criteriaBuilder.and(childPredicates.toArray(new Predicate[0]));
-        });
-        List<Comment> childComments = commentRepository.findAll(childSpecification);
-        if (!childComments.isEmpty()) {
+        Specification<Comment> childSpec = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(criteriaBuilder.equal(root.get("type"), type));
+            predicates.add(criteriaBuilder.equal(root.get("typeId"), typeId));
+            predicates.add(criteriaBuilder.isNull(root.get("parentId")));
+            query.orderBy(criteriaBuilder.desc(root.get("createTime")));
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        List<Comment> childComments = commentRepository.findAll(childSpec);
+        if(!childComments.isEmpty()){
             comments.addAll(childComments);
         }
-        List<ArticleCommentVO> commentVOs = comments.stream().map(comment -> comment.asViewObject(ArticleCommentVO.class)).toList();
-        List<ArticleCommentVO> parentComments = commentVOs.stream().filter(comment -> comment.getParentId() == null).toList();
-        List<ArticleCommentVO> collect = parentComments.stream().peek(comment ->{
-            comment.setChildComments(getChildComment(commentVOs, comment.getId()));
-            comment.setChildCommentCount(getChildCommentCount(commentVOs, comment.getId()));
+
+        List<ArticleCommentVO> commentVOs = comments.stream()
+                .map(comment -> comment.asViewObject(ArticleCommentVO.class))
+                .toList();
+
+        List<ArticleCommentVO> parentComments = commentVOs.stream()
+                .filter(comment -> comment.getParentId()==null)
+                .toList();
+
+        List<ArticleCommentVO> collect = parentComments.stream().peek(comment->{
+            comment.setChildComments(getChildComment(commentVOs,comment.getId()));
+            comment.setChildCommentCount(getChildCommentCount(commentVOs,comment.getId()));
+            comment.setParentCommentCount((long) commentRepository.count(
+                    (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                            criteriaBuilder.equal(root.get("type"),type),
+                            criteriaBuilder.equal(root.get("typeId"),typeId),
+                            criteriaBuilder.isNull(root.get("parentId"))
+                    )
+            ));
         }).toList();
 
-        Specification<Comment> countSpecification = ((root, query, criteriaBuilder) -> {
-            List<Predicate> countPredicates = new ArrayList<>();
-            countPredicates.add(criteriaBuilder.equal(root.get("type"),type));
-            countPredicates.add(criteriaBuilder.equal(root.get("typeId"),typeId));
-            return criteriaBuilder.and(countPredicates.toArray(new Predicate[0]));
+        long totalCount = commentRepository.count(
+                (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                        criteriaBuilder.equal(root.get("type"),type),
+                        criteriaBuilder.equal(root.get("typeId"),typeId)
+                )
+        );
 
-        });
-        long count = commentRepository.count(countSpecification);
-
-        return new PageVo<>(collect,count);
-
+        return new PageVo<>(collect, totalCount);
 
     }
 
@@ -119,13 +133,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public ResponseResult<String> userComment(UserCommentDTO userCommentDTO) {
-        Comment comment = new Comment();
-        comment.setCommentContent(userCommentDTO.getCommentContent());
-        comment.setCommentUserId(userCommentDTO.getReplyUserId());
-        comment.setParentId(userCommentDTO.getParentId());
-        User user = userRepository.findById(userCommentDTO.getReplyUserId()).orElse(null);
-        Comment savedComment = commentRepository.save(comment);
+        Comment comment = userCommentDTO.asViewObject(Comment.class,comment1-> comment1.setCommentUserId(SecurityUtils.getUserId()));
+        commentRepository.save(comment);
         return ResponseResult.Success();
+//        Comment comment = new Comment();
+//        comment.setCommentContent(userCommentDTO.getCommentContent());
+//        comment.setCommentUserId(userCommentDTO.getReplyUserId());
+//        comment.setParentId(userCommentDTO.getParentId());
+//        User user = userRepository.findById(userCommentDTO.getReplyUserId()).orElse(null);
+//        Comment savedComment = commentRepository.save(comment);
+//        return ResponseResult.Success();
     }
 
     @Override

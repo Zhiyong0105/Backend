@@ -24,6 +24,10 @@ public class Comment implements BaseData {
 
     private Long parentId;
 
+    private Integer type;
+
+    private Integer typeId;
+
     private Long replyId;
 
     private String commentContent;
