@@ -124,6 +124,7 @@ public class JwtUtils {
                         (
                                 new User()
                                         .setUsername(claims.get("name").asString())
+                                        .setId(toId(jwt))
                         )
                 .setPermissions(null);
 

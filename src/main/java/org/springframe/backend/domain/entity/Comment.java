@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframe.backend.domain.BaseData;
 
 import java.util.Date;
@@ -34,8 +36,9 @@ public class Comment implements BaseData {
 
     private Integer commentUserId;
 
+    @CreationTimestamp
     private Date createTime;
-
+    @UpdateTimestamp
     private Date updateTime;
 
 }

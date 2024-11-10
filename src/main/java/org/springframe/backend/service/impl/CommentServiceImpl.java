@@ -42,14 +42,14 @@ public class CommentServiceImpl implements CommentService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
         Pageable pageable = PageRequest.of(pageNum-1,pageSize,Sort.by(Sort.Direction.DESC,"createTime"));
-        Page<Comment> commentPage = commentRepository.findAll(pageable);
+        Page<Comment> commentPage = commentRepository.findAll(parentSpec,pageable);
         List<Comment> comments = commentPage.getContent();
 
         Specification<Comment> childSpec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("type"), type));
             predicates.add(criteriaBuilder.equal(root.get("typeId"), typeId));
-            predicates.add(criteriaBuilder.isNull(root.get("parentId")));
+            predicates.add(criteriaBuilder.isNotNull(root.get("parentId")));
             query.orderBy(criteriaBuilder.desc(root.get("createTime")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -136,13 +136,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = userCommentDTO.asViewObject(Comment.class,comment1-> comment1.setCommentUserId(SecurityUtils.getUserId()));
         commentRepository.save(comment);
         return ResponseResult.Success();
-//        Comment comment = new Comment();
-//        comment.setCommentContent(userCommentDTO.getCommentContent());
-//        comment.setCommentUserId(userCommentDTO.getReplyUserId());
-//        comment.setParentId(userCommentDTO.getParentId());
-//        User user = userRepository.findById(userCommentDTO.getReplyUserId()).orElse(null);
-//        Comment savedComment = commentRepository.save(comment);
-//        return ResponseResult.Success();
+
     }
 
     @Override

@@ -10,7 +10,7 @@ public class UserCommentDTO implements BaseData {
     private Integer type;
     private Integer typeId;
     private Long parentId;
-    private Integer replyId;
+    private Long replyId;
     private String commentContent;
     private Integer replyUserId;
 }
