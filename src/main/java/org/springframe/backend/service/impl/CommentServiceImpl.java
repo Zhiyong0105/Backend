@@ -1,6 +1,7 @@
 package org.springframe.backend.service.impl;
 
 import jakarta.persistence.criteria.Predicate;
+import org.springframe.backend.constants.RedisConst;
 import org.springframe.backend.domain.dto.UserCommentDTO;
 import org.springframe.backend.domain.entity.Comment;
 import org.springframe.backend.domain.entity.User;
@@ -9,6 +10,7 @@ import org.springframe.backend.domain.vo.PageVo;
 import org.springframe.backend.repository.CommentRepository;
 import org.springframe.backend.repository.UserRepository;
 import org.springframe.backend.service.CommentService;
+import org.springframe.backend.utils.RedisCache;
 import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RedisCache redisCache;
+
     @Override
     public PageVo<List<ArticleCommentVO>> getComment(Integer type, Integer typeId, Integer pageNum, Integer pageSize) {
         Specification<Comment> parentSpec = (root, query, criteriaBuilder) -> {
@@ -43,7 +48,9 @@ public class CommentServiceImpl implements CommentService {
         };
         Pageable pageable = PageRequest.of(pageNum-1,pageSize,Sort.by(Sort.Direction.DESC,"createTime"));
         Page<Comment> commentPage = commentRepository.findAll(parentSpec,pageable);
-        List<Comment> comments = commentPage.getContent();
+//        List<Comment> comments = commentPage.getContent();
+        List<Comment> comments = new ArrayList<>(commentPage.getContent());
+
 
         Specification<Comment> childSpec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -92,13 +99,7 @@ public class CommentServiceImpl implements CommentService {
 
     private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Integer parentId) {
         return comments.stream()
-                .filter(comment ->{
-                    if (Objects.isNull(comment.getParentId())) {
-                        User user = userRepository.findById(comment.getCommentUserId()).orElse(null);
-
-                    }
-                    return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
-                })
+                .filter(comment -> Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId))
                 .peek(comment ->{
                     User user = userRepository.findById(comment.getCommentUserId()).orElse(null);
                     comment.setChildComments(getChildComment(comments,comment.getId()));
@@ -134,6 +135,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseResult<String> userComment(UserCommentDTO userCommentDTO) {
         Comment comment = userCommentDTO.asViewObject(Comment.class,comment1-> comment1.setCommentUserId(SecurityUtils.getUserId()));
+        redisCache.incrementCacheMapValue(RedisConst.ARTICLE_COMMENT_COUNT,userCommentDTO.getTypeId().toString(),1);
         commentRepository.save(comment);
         return ResponseResult.Success();
 

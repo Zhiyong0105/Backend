@@ -90,6 +90,10 @@ public class RedisCache {
         return ops.get(key,hkey);
    }
 
+   public void incrementCacheMapValue(String key, String hkey,int value){
+        redisTemplate.opsForHash().increment(key,hkey,value);
+   }
+
    public void delCacheMapValue(final String key, final String hkey) {
         HashOperations ops = redisTemplate.opsForHash();
         ops.delete(key,hkey);
