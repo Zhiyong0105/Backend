@@ -99,6 +99,7 @@ public class CommentServiceImpl implements CommentService {
 
     private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Long parentId) {
         return comments.stream()
+
                 .filter(comment -> {
                     System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
                     return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
