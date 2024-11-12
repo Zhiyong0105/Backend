@@ -23,7 +23,7 @@ public class Comment implements BaseData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private Long parentId;
 

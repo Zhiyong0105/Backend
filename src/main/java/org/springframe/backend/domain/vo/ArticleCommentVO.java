@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 public class ArticleCommentVO {
-    private Integer id;
+    private Long id;
     private Integer commentType;
     private Integer typeId;
     private Long parentId;

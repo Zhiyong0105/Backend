@@ -97,31 +97,39 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-//    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Integer parentId) {
-//        return comments.stream()
-//                .filter(comment -> {
-//                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
-//                    return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
-//                })
-//                .peek(comment ->{
-//                    comment.setChildComments(getChildComment(comments,comment.getId()));
-//                })
-//                .toList();
-//    }
-    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments, Integer parentId) {
+    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Long parentId) {
         return comments.stream()
                 .filter(comment -> {
                     System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
                     return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
                 })
-                .peek(comment -> {
-                    comment.setChildComments(getChildComment(comments, comment.getId()));
-
+                .peek(comment ->{
+                    comment.setChildComments(getChildComment(comments,comment.getId()));
                 })
                 .toList();
     }
+//    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments, Integer parentId) {
+//        return comments.stream()
+//                .filter(comment -> {
+//                    boolean isValid = Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
+//                    if (isValid) {
+//                        System.out.println("Retained Comment ID: " + comment.getId());
+//                    }
+//                    return isValid;
+//                })
+////                .filter(comment -> {
+////                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
+////                    return  Objects.equals(comment.getParentId(), parentId);
+////                })
+////                .peek(comment -> {
+////                    comment.setChildComments(getChildComment(comments, comment.getId()));
+////
+////                })
+//
+//                .toList();
+//    }
 
-    private Long getChildCommentCount(List<ArticleCommentVO> comments,Integer parentId) {
+    private Long getChildCommentCount(List<ArticleCommentVO> comments,Long parentId) {
         return comments.stream()
                 .filter(comment -> Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(),parentId))
                 .peek(comment -> {
@@ -138,7 +146,7 @@ public class CommentServiceImpl implements CommentService {
                 .sum();
     }
 
-    private Specification<Comment> getReplyCountSpecification(Integer commentId) {
+    private Specification<Comment> getReplyCountSpecification(Long commentId) {
         return ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(criteriaBuilder.equal(root.get("replyId"),commentId));
