@@ -97,13 +97,28 @@ public class CommentServiceImpl implements CommentService {
 
     }
 
-    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Integer parentId) {
+//    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments,Integer parentId) {
+//        return comments.stream()
+//                .filter(comment -> {
+//                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
+//                    return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
+//                })
+//                .peek(comment ->{
+//                    comment.setChildComments(getChildComment(comments,comment.getId()));
+//                })
+//                .toList();
+//    }
+    private List<ArticleCommentVO> getChildComment(List<ArticleCommentVO> comments, Integer parentId) {
         return comments.stream()
-                .filter(comment -> Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId))
-                .peek(comment ->{
-                    User user = userRepository.findById(comment.getCommentUserId()).orElse(null);
-                    comment.setChildComments(getChildComment(comments,comment.getId()));
-                }).toList();
+                .filter(comment -> {
+                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
+                    return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
+                })
+                .peek(comment -> {
+                    comment.setChildComments(getChildComment(comments, comment.getId()));
+
+                })
+                .toList();
     }
 
     private Long getChildCommentCount(List<ArticleCommentVO> comments,Integer parentId) {
