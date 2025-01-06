@@ -1,12 +1,25 @@
 package org.springframe.backend.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import okhttp3.Headers;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import org.springframe.backend.constants.Const;
+import org.springframe.backend.constants.ResponseConst;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
+import org.springframe.backend.enums.LoginEnum;
+import org.springframe.backend.enums.RequestHeaderEnum;
 import org.springframe.backend.enums.ResponseEnum;
+import org.springframe.backend.enums.UrlEnum;
 import org.springframe.backend.repository.UserRepository;
 import org.springframe.backend.service.IUserService;
 import org.springframe.backend.utils.ResponseResult;
+import org.springframe.backend.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import java.io.IOException;
 import java.util.List;
 @Service
 public class UserServiceImpl implements IUserService {
@@ -59,9 +73,11 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDetails loadUserByUsername(String text) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameOrEmail(text)
-                .orElseThrow(() -> new UsernameNotFoundException(ResponseEnum.USER_EX.getMsg()));
-
+        User user = new User();
+        user = userRepository.findByUsernameOrEmail(text)
+                .orElseThrow(() -> new UsernameNotFoundException(ResponseEnum.LOGIN_FAIL.getMsg()));
         return new LoginUser(user, null);
     }
+
+
 }

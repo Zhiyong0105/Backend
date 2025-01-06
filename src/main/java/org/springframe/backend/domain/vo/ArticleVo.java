@@ -14,5 +14,6 @@ public class ArticleVo {
     private String articleSummary;
     private Date createTime;
     private Long CommentCount;
+    private Date updateTime;
 
 }

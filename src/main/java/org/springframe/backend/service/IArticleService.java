@@ -12,14 +12,16 @@ public interface IArticleService {
 
     PageVo<List<ArticleVo>> listAllArticle(Integer pageNum, Integer pageSize);
 
-    ArticleDetailVo getArticleDetail(Integer id);
+    ArticleDetailVo getArticleDetail(Long id);
 
-    void addVisitCount(Integer id);
+    void addVisitCount(Long id);
 
 
     ResponseResult<Void> publishArticle(ArticleDTO articleDTO);
 
     ResponseResult<Void> deleteArticle(List<Long> ids);
+
+    ResponseResult<Void> updateArticle(ArticleDTO articleDTO);
 
 
 

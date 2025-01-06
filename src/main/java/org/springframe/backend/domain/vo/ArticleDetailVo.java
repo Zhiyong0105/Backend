@@ -16,6 +16,7 @@ public class ArticleDetailVo {
     private Integer isTop;
     private Long visitCount;
     private Long commentCount;
+    private String articleSummary;
     private Date createTime;
     private Date updateTime;
 }

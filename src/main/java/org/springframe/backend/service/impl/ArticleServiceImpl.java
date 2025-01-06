@@ -15,12 +15,15 @@ import org.springframe.backend.service.IArticleService;
 import org.springframe.backend.utils.RedisCache;
 import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.SecurityUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -69,13 +72,16 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     @Override
-    public ArticleDetailVo getArticleDetail(Integer id) {
-       return null;
+    public ArticleDetailVo getArticleDetail(Long id) {
+        Article article = articleRepository.findById(id).orElse(null);
+        ArticleDetailVo articleDetailVo = new ArticleDetailVo();
+        BeanUtils.copyProperties(article, articleDetailVo);
+       return articleDetailVo;
 
     }
 
     @Override
-    public void addVisitCount(Integer id) {
+    public void addVisitCount(Long id) {
         if(redisCache.isHasKey(RedisConst.ARTICLE_VISIT_COUNT + id)){
             redisCache.increment(RedisConst.ARTICLE_VISIT_COUNT + id,1L);
         }else{
@@ -87,7 +93,12 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Override
     public ResponseResult<Void> publishArticle(ArticleDTO articleDTO) {
-        Article article = articleDTO.asViewObject(Article.class,v -> v.setUserId(SecurityUtils.getUserId()));
+
+//        Long id =SecurityUtils.getUserId().longValue();
+//
+//        Article article = articleDTO.asViewObject(Article.class,v -> v.setUserId(id));
+        Article article = new Article();
+        BeanUtils.copyProperties(articleDTO, article);
         try{
             articleRepository.save(article);
             return ResponseResult.Success();
@@ -106,6 +117,24 @@ public class ArticleServiceImpl implements IArticleService {
         }catch (Exception e){
             return ResponseResult.Fail();
         }
+
+    }
+
+    @Override
+    @Transactional
+    public ResponseResult<Void> updateArticle(ArticleDTO articleDTO) {
+        Article existArticle = articleRepository.findById(articleDTO.getId()).orElse(null);
+        Article article = new Article();
+        BeanUtils.copyProperties(articleDTO, article);
+        article.setCreateTime(existArticle.getCreateTime());
+        try{
+            articleRepository.save(article);
+            return ResponseResult.Success();
+        }catch (Exception e){
+
+            return ResponseResult.Fail();
+        }
+
 
     }
 }

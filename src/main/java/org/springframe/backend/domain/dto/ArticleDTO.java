@@ -11,5 +11,6 @@ public class ArticleDTO implements BaseData {
     private Long id;
     private String articleTitle;
     private String articleContent;
+    private String articleSummary;
     private Integer status;
 }

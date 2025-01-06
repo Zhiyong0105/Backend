@@ -13,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframe.backend.constants.RedisConst;
 import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
+import org.springframe.backend.domain.vo.AuthorizeVO;
+import org.springframe.backend.repository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,8 +35,8 @@ public class JwtUtils {
 
     @Resource
     private RedisCache redisCache;
-
-
+    @Autowired
+    private UserRepository userRepository;
 
 
     public boolean invaildateJwt(String headerToken){
@@ -65,6 +68,8 @@ public class JwtUtils {
          redisCache.setCacheObject(RedisConst.JWT_WHITE_LIST + uuid,jwt,(int) (expire.getTime()- now.getTime()), TimeUnit.MINUTES);
          return jwt;
     }
+
+
 
     public boolean deleteToken(String uuid){
         if(this.isInvalidToken(uuid)){return false;}
@@ -115,6 +120,20 @@ public class JwtUtils {
     }
 
 
+    public AuthorizeVO githubUserInfo(String token){
+        Algorithm algorithm = Algorithm.HMAC256(key);
+        JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+        DecodedJWT jwt = jwtVerifier.verify(token);
+        Integer id = jwt.getClaim("id").asInt();
+        User user = userRepository.findById(id).orElse(null);
+        AuthorizeVO authorizeVO = new AuthorizeVO();
+        BeanUtils.copyProperties(user,authorizeVO);
+        authorizeVO.setToken(token);
+        authorizeVO.setExpireTime(expireTime());
+         return  authorizeVO;
+
+    }
+
     public UserDetails toUser(DecodedJWT jwt) {
         Map<String, Claim> claims = jwt.getClaims();
 
@@ -138,7 +157,7 @@ public class JwtUtils {
 
     public Date expireTime() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, expire * 24);
+        calendar.add(Calendar.MINUTE, expire * 10);
         return calendar.getTime();
     }
 

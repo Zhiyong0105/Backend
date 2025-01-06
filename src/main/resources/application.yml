@@ -20,7 +20,26 @@ spring:
   security:
     jwt:
       key: jwt-key
-      expire: 7
+      expire: 1
+    oauth2:
+      client:
+        registration:
+          github:
+              client-id: Ov23liBw7Wqrc54kgUE9
+              client-secret: c62952fb567d3e52360fb02418f0d8225718cf9f
+              scope:
+                - read:user
+                - user:email
+              redirect-uri: "http://localhost:8080/login/oauth2/code/github"
+              authorization-grant-type: authorization_code
+              client-name: Github
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+
+
   data:
     redis:
       url: redis://@localhost:6379/0

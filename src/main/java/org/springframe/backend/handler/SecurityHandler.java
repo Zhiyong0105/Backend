@@ -1,8 +1,12 @@
 package org.springframe.backend.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframe.backend.domain.entity.LoginUser;
+import org.springframe.backend.domain.entity.User;
 import org.springframe.backend.domain.vo.AuthorizeVO;
 import org.springframe.backend.enums.ResponseEnum;
 import org.springframe.backend.utils.JwtUtils;
@@ -12,11 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.UUID;
+@Slf4j
 @Component
 public class SecurityHandler {
     @Autowired
@@ -90,5 +98,29 @@ public class SecurityHandler {
                 return;
             }
             WebUtil.renderString(response,ResponseResult.error(ResponseEnum.LOGOUT_FAIL.getCode(),ResponseEnum.LOGOUT_FAIL.getMsg()).asJsonString());
+    }
+
+    public void onGithubAuthenticationSuccess(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
+    ) throws IOException {
+        log.info("Authentication success with user: {}", authentication.getPrincipal());
+        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
+
+        String uuid = UUID.randomUUID().toString();
+        Integer id = oAuth2User.getAttribute("id");
+        String name = oAuth2User.getAttribute( "login");
+
+//        String token = jwtUtils.createJwt(uuid,null, id, name);
+//        String redirectUrl = "http://localhost:5173/auth-callback?uuid="+uuid;
+//        response.sendRedirect(redirectUrl);
+        String token = jwtUtils.createJwt(uuid,null,id,name);
+        Cookie cookie = new Cookie("tempToken",token);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+        response.sendRedirect("http://localhost:5173/article?from=github");
     }
 }

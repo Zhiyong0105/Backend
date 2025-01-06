@@ -19,13 +19,6 @@ public enum ResponseEnum {
     TOKEN_VERIFY_ERROR(401,"Failed token authentication");
     private Integer code;
     private String msg;
-    public static  ResponseEnum getResponseEnum(Integer code){
-        for(ResponseEnum responseEnum:ResponseEnum.values()){
-            if(responseEnum.code.equals(code)){
-                return responseEnum;
-            }
-        }
-        return ResponseEnum.ERROR;
-    }
+
 
 }

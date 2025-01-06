@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.springframe.backend.domain.dto.ArticleDTO;
+import org.springframe.backend.domain.vo.ArticleDetailVo;
 import org.springframe.backend.domain.vo.ArticleVo;
 import org.springframe.backend.domain.vo.PageVo;
 import org.springframe.backend.service.IArticleService;
@@ -24,24 +25,34 @@ public class ArticleController {
 
     @GetMapping("/list")
     public ResponseResult<PageVo<List<ArticleVo>>> list(
-            @NotNull Integer pageNum,
-            @NotNull Integer pageSize
+             @NotNull Integer pageNum,
+             @NotNull Integer pageSize
     ){
         return ControllerUtils.messageHandler((()-> articleService.listAllArticle(pageNum,pageSize)));
     }
 
     @GetMapping("/visit/{id}")
-    public ResponseResult<Void> visit(@PathVariable("id") Integer id){
+    public ResponseResult<Void> visit(@PathVariable("id") Long id){
         articleService.addVisitCount(id);
         return ControllerUtils.messageHandler(()->null);
     }
 
+    @GetMapping("/{id}")
+    public ResponseResult<ArticleDetailVo> getArticle(@PathVariable("id") Long id){
+
+        return ControllerUtils.messageHandler((()-> articleService.getArticleDetail(id)));
+    }
     @PostMapping("/publish")
     public ResponseResult<Void> publish(@Valid @RequestBody ArticleDTO articleDTO){
         return articleService.publishArticle(articleDTO);
     }
 
-    @DeleteMapping("/back/delete")
+    @PostMapping("/update")
+    public ResponseResult<Void> update(@Valid @RequestBody ArticleDTO articleDTO){
+        return articleService.updateArticle(articleDTO);
+    }
+
+    @DeleteMapping("/auth/back/delete")
     public ResponseResult<Void> deleteArticle(@RequestBody List<Long> ids){
         return articleService.deleteArticle(ids);
     }

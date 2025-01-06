@@ -159,7 +159,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public ResponseResult<String> userComment(UserCommentDTO userCommentDTO) {
         Comment comment = userCommentDTO.asViewObject(Comment.class,comment1-> comment1.setCommentUserId(SecurityUtils.getUserId()));
-        redisCache.incrementCacheMapValue(RedisConst.ARTICLE_COMMENT_COUNT,userCommentDTO.getTypeId().toString(),1);
+//        redisCache.incrementCacheMapValue(RedisConst.ARTICLE_COMMENT_COUNT,userCommentDTO.getTypeId().toString(),1);
         commentRepository.save(comment);
         return ResponseResult.Success();
 
