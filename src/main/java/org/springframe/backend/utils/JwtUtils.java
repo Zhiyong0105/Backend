@@ -130,6 +130,7 @@ public class JwtUtils {
         BeanUtils.copyProperties(user,authorizeVO);
         authorizeVO.setToken(token);
         authorizeVO.setExpireTime(expireTime());
+        authorizeVO.setUserId(toId(jwt).longValue());
          return  authorizeVO;
 
     }
@@ -157,7 +158,7 @@ public class JwtUtils {
 
     public Date expireTime() {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, expire * 10);
+        calendar.add(Calendar.MINUTE, expire * 100);
         return calendar.getTime();
     }
 

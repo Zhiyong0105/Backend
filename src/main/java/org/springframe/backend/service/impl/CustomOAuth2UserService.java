@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframe.backend.constants.RedisConst;
 import org.springframe.backend.domain.entity.User;
@@ -33,6 +34,7 @@ import java.util.Arrays;
 import java.util.Map;
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
@@ -41,12 +43,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final JwtUtils jwtUtils;
 
 
-    public CustomOAuth2UserService(UserRepository userRepository, RedisCache redisCache, PasswordEncoder passwordEncoder, JwtUtils jwtUtils) {
-        this.userRepository = userRepository;
-        this.redisCache = redisCache;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-    }
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = new DefaultOAuth2UserService().loadUser(userRequest);
@@ -89,6 +86,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 //        log.info("token:{}",token);
         if(jwtUtils.verifyJwt(token)){
             AuthorizeVO authorizeVO = jwtUtils.githubUserInfo(token);
+
 
             Cookie clearedCookie = new Cookie("tempToken", null);
             clearedCookie.setPath("/"); // 确保路径与原始 cookie 匹配

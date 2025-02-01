@@ -48,7 +48,7 @@ public class CommentServiceImpl implements CommentService {
         };
         Pageable pageable = PageRequest.of(pageNum-1,pageSize,Sort.by(Sort.Direction.DESC,"createTime"));
         Page<Comment> commentPage = commentRepository.findAll(parentSpec,pageable);
-//        List<Comment> comments = commentPage.getContent();
+//
         List<Comment> comments = new ArrayList<>(commentPage.getContent());
 
 
@@ -101,7 +101,7 @@ public class CommentServiceImpl implements CommentService {
         return comments.stream()
 
                 .filter(comment -> {
-                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
+//                    System.out.println("Filtering Comment ID: " + comment.getId() + ", Parent ID: " + comment.getParentId() + ", Given Parent ID: " + parentId);
                     return Objects.nonNull(comment.getParentId()) && Objects.equals(comment.getParentId(), parentId);
                 })
                 .peek(comment ->{

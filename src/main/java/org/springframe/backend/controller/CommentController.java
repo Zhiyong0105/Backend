@@ -2,6 +2,7 @@ package org.springframe.backend.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import lombok.RequiredArgsConstructor;
 import org.springframe.backend.domain.dto.UserCommentDTO;
 import org.springframe.backend.domain.vo.ArticleCommentVO;
 import org.springframe.backend.domain.vo.PageVo;
@@ -17,9 +18,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
+@RequiredArgsConstructor
 public class CommentController {
-    @Autowired
-    private CommentService commentService;
+
+    private final CommentService commentService;
 
 
     @GetMapping("/getComment")

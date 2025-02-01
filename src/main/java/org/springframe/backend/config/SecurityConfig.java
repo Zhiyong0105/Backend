@@ -66,7 +66,9 @@ public class SecurityConfig  {
                         )
                         .successHandler(securityHandler::onGithubAuthenticationSuccess)
 
+
                 )
+
 
                 .exceptionHandling(from -> from
                         .authenticationEntryPoint(securityHandler::onUnAuthenticated)

@@ -121,6 +121,6 @@ public class SecurityHandler {
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         response.addCookie(cookie);
-        response.sendRedirect("http://localhost:5173/article?from=github");
+        response.sendRedirect("http://localhost:5173/article");
     }
 }
