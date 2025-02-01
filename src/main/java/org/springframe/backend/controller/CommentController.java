@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframe.backend.domain.dto.UserCommentDTO;
 import org.springframe.backend.domain.vo.ArticleCommentVO;
 import org.springframe.backend.domain.vo.PageVo;
+import org.springframe.backend.repository.CommentRepository;
 import org.springframe.backend.service.CommentService;
 import org.springframe.backend.utils.ControllerUtils;
 import org.springframe.backend.utils.ResponseResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,7 @@ import java.util.List;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentRepository commentRepository;
 
 
     @GetMapping("/getComment")
@@ -42,6 +45,17 @@ public class CommentController {
     @GetMapping("/auth/check")
     public void check(){
         System.out.println("check");
+    }
+
+    @DeleteMapping("/auth/delete")
+    public ResponseResult<Void> deleteComment(List<Long> ids){
+
+        try{
+            commentRepository.deleteAllById(ids);
+            return ResponseResult.Success();
+        }catch (Exception e){
+            return ResponseResult.Fail();
+        }
     }
 
 

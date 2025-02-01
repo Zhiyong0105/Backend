@@ -41,8 +41,18 @@ public class UserController {
         return customOAuth2UserService.verifyGithubToken(request,response);
 
     }
+    @PutMapping("/user/auth/updateInfo")
+    public ResponseResult<?> updateInfo() {
+        return null;
+    }
 
-    public ResponseResult<?> getUserInfo() {
+    @PutMapping("/user/auth/resetPassword")
+    public ResponseResult<?> resetPassword(@Validated @RequestBody UserDTO userDTO) {
+        return null;
+    }
+
+    @DeleteMapping("/user/auth/deleteUserId/{id}")
+    public ResponseResult<?> deteleUserId(@PathVariable Long id) {
         return null;
     }
 

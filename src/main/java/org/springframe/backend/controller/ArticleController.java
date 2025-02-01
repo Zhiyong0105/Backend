@@ -52,7 +52,7 @@ public class ArticleController {
         return articleService.updateArticle(articleDTO);
     }
 
-    @DeleteMapping("/auth/back/delete")
+    @DeleteMapping("/auth/delete")
     public ResponseResult<Void> deleteArticle(@RequestBody List<Long> ids){
         return articleService.deleteArticle(ids);
     }
