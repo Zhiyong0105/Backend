@@ -8,6 +8,7 @@ import org.springframe.backend.constants.RedisConst;
 import org.springframe.backend.domain.dto.LoginDTO;
 import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
+import org.springframe.backend.domain.dto.UserUpdateDTO;
 import org.springframe.backend.domain.entity.User;
 import org.springframe.backend.domain.vo.AuthorizeVO;
 import org.springframe.backend.service.impl.CustomOAuth2UserService;
@@ -41,9 +42,10 @@ public class UserController {
         return customOAuth2UserService.verifyGithubToken(request,response);
 
     }
-    @PutMapping("/user/auth/updateInfo")
-    public ResponseResult<?> updateInfo() {
-        return null;
+    @PutMapping("/user/auth/update/profile")
+    public ResponseResult<?> updateInfo(@Validated @RequestBody UserUpdateDTO userUpdateDTO) {
+
+        return userService.userUpdate(userUpdateDTO);
     }
 
     @PutMapping("/user/auth/resetPassword")
@@ -51,7 +53,7 @@ public class UserController {
         return null;
     }
 
-    @DeleteMapping("/user/auth/deleteUserId/{id}")
+    @DeleteMapping("/user/auth/deleteUser/{id}")
     public ResponseResult<?> deteleUserId(@PathVariable Long id) {
         return null;
     }

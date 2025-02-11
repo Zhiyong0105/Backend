@@ -11,6 +11,8 @@ public enum ResponseEnum {
     SUCCESS(200,"success"),
     FAIL(300,"Fail to get data"),
     USER_EX(301,"User  exist"),
+    USER_NAME_EX(301,"Username exist"),
+    USER_NOT_EXIST(302,"User not exist"),
     ERROR(302,"Error Request"),
     LOGIN_FAIL(303,"Login fail"),
     LOGOUT_SUCCESS(304,"Logout success"),

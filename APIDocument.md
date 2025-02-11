@@ -1,0 +1,21 @@
+# User API
+- User API
+  - User Profile Management
+    - PUT `/user/auth/update/profile`
+    - PUT `/user/auth/update/password`
+    - PUT `/user/auth/update/email`
+    - POST `/user/auth/resetPassword/request`
+    - POST `/user/auth/resetPassword/verify`
+  - User Authentication
+    - POST `/user/register`
+    - POST `/user/login`
+    - POST `/user/github/login`
+    - POST `/user/auth/logout`
+    - POST `/user/auth/refreshToken`
+- Admin User Management
+  - GET `/admin/auth/get/users`
+  - GET `/admin/auth/get/roles`
+  - PUT `/admin/auth/users/{userId}/role`
+  - PUT `/admin/auth/users/{userId}/status`
+  - DELETE `/admin/auth/users/ids`
+

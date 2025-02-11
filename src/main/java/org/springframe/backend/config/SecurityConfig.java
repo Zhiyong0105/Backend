@@ -65,8 +65,6 @@ public class SecurityConfig  {
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler(securityHandler::onGithubAuthenticationSuccess)
-
-
                 )
 
 
