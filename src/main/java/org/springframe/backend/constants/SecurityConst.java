@@ -13,5 +13,7 @@ public class SecurityConst {
 
     public static final String ARTICLE_CHECK = "/article/auth/**";
 
-    public static final String[] AUTH_CHECK_ARRAY = { AUTH_CHECK, COMMENT_CHECK,ARTICLE_CHECK };
+    public static final String ADMIN_CHECK = "/admin/auth/**";
+
+    public static final String[] AUTH_CHECK_ARRAY = { AUTH_CHECK, COMMENT_CHECK,ARTICLE_CHECK, ADMIN_CHECK };
 }

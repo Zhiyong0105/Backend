@@ -1,39 +1,27 @@
 package org.springframe.backend.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.springframe.backend.constants.Const;
-import org.springframe.backend.constants.ResponseConst;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.dto.UserUpdateDTO;
 import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
-import org.springframe.backend.enums.LoginEnum;
-import org.springframe.backend.enums.RequestHeaderEnum;
+import org.springframe.backend.domain.vo.UserListVO;
 import org.springframe.backend.enums.ResponseEnum;
-import org.springframe.backend.enums.UrlEnum;
 import org.springframe.backend.repository.UserRepository;
 import org.springframe.backend.service.IUserService;
-import org.springframe.backend.utils.JwtUtils;
+import org.springframe.backend.utils.ControllerUtils;
 import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +69,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void save(User user) {
             userRepository.save(user);
+    }
+
+    @Override
+    public List<UserListVO> getUsers(List<Integer> ids) {
+        List<User> users = userRepository.findAllById(ids);
+
+        return users.stream()
+                .map(
+                       user -> {
+                           UserListVO userListVO = new UserListVO();
+                           BeanUtils.copyProperties(user, userListVO);
+                           return userListVO;
+                       }
+                )
+                .collect(Collectors.toList());
     }
 
     @Override
