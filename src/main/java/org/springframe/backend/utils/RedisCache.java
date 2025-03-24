@@ -1,5 +1,8 @@
 package org.springframe.backend.utils;
 
+import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.HashOperations;
@@ -9,11 +12,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+@Slf4j
+@RequiredArgsConstructor
 @Component
 public class RedisCache {
-    @Autowired
-    public RedisTemplate redisTemplate;
+
+    private  final RedisTemplate redisTemplate;
 
 
     public Long increment(String key, long delta) {
@@ -26,6 +30,25 @@ public class RedisCache {
    public <T> void setCacheObject(final String key,final T value, final Integer timeout, final TimeUnit timeUnit) {
         redisTemplate.opsForValue().set(key, value, timeout, timeUnit);
    }
+
+   public <T> void setCacheZsetObject(final String key, final String id, final double score) {
+        redisTemplate.opsForZSet().add(key,id,score);
+
+   }
+
+   public List<String> getCacheZsetRevRange(final String key, final long start, final long end) {
+        Set<String> set = redisTemplate.opsForZSet().reverseRange(key,start,end);
+        if (set != null && !set.isEmpty()) {
+            return new ArrayList<>(set);
+        }
+        return Collections.emptyList();
+   }
+
+   public void incrementZsetScore(final String key, final String member, final long delta) {
+        redisTemplate.opsForZSet().incrementScore(key,member,delta);
+   }
+
+
 
    public boolean expire(final String key, final long timeout) {
         return redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
@@ -93,6 +116,10 @@ public class RedisCache {
    public void incrementCacheMapValue(String key, String hkey,int value){
         redisTemplate.opsForHash().increment(key,hkey,value);
    }
+
+    public Long getCacheScore(final String key,final String member) {
+        return redisTemplate.opsForZSet().score(key,member).longValue();
+    }
 
    public void delCacheMapValue(final String key, final String hkey) {
         HashOperations ops = redisTemplate.opsForHash();

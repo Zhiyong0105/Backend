@@ -31,6 +31,11 @@ public class ArticleController {
         return ControllerUtils.messageHandler((()-> articleService.listAllArticle(pageNum,pageSize)));
     }
 
+    @GetMapping("/list/hotArticle")
+    public ResponseResult<PageVo<List<ArticleVo>>> listHotArticle(){
+        return ControllerUtils.messageHandler((()-> articleService.listHotArticle()));
+    }
+
     @GetMapping("/visit/{id}")
     public ResponseResult<Void> visit(@PathVariable("id") Long id){
         articleService.addVisitCount(id);
@@ -42,12 +47,19 @@ public class ArticleController {
 
         return ControllerUtils.messageHandler((()-> articleService.getArticleDetail(id)));
     }
-    @PostMapping("/publish")
+    @PostMapping("/auth/publish")
     public ResponseResult<Void> publish(@Valid @RequestBody ArticleDTO articleDTO){
         return articleService.publishArticle(articleDTO);
     }
 
-    @PostMapping("/update")
+    @PostMapping("/auth/saveDraft")
+    public ResponseResult<Void> saveDraft(@Valid @RequestBody ArticleDTO articleDTO){
+        return articleService.saveDraft(articleDTO);
+    }
+
+
+
+    @PostMapping("/auth/update")
     public ResponseResult<Void> update(@Valid @RequestBody ArticleDTO articleDTO){
         return articleService.updateArticle(articleDTO);
     }
@@ -56,5 +68,7 @@ public class ArticleController {
     public ResponseResult<Void> deleteArticle(@RequestBody List<Long> ids){
         return articleService.deleteArticle(ids);
     }
+
+
 
 }

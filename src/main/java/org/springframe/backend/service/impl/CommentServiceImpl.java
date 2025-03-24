@@ -30,12 +30,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentRepository commentRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RedisCache redisCache;
-
+    
     @Override
     public PageVo<List<ArticleCommentVO>> getComment(Integer type, Integer typeId, Integer pageNum, Integer pageSize) {
         Specification<Comment> parentSpec = (root, query, criteriaBuilder) -> {
