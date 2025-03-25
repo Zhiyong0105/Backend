@@ -1,14 +1,14 @@
 package org.springframe.backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframe.backend.utils.ControllerUtils;
+import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.fileUploadUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,5 +28,10 @@ public class fileUploadController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseResult<List<String>> listFile(){
+        return ResponseResult.Success(fileUploadUtils.listFiles());
     }
 }

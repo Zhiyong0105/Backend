@@ -2,6 +2,9 @@ package org.springframe.backend.utils;
 
 import io.minio.*;
 import io.minio.http.Method;
+import io.minio.messages.DeleteError;
+import io.minio.messages.DeleteObject;
+import io.minio.messages.Item;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -64,4 +69,46 @@ public class fileUploadUtils {
 
 
     }
+
+    public List<String> listFiles(){
+        List<String> fileNames = new ArrayList<>();
+        try{
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .recursive(true)
+                            .build()
+            );
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                fileNames.add(item.objectName());
+            }
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
+     return fileNames;
+    }
+
+    public boolean deleteFiles(List<String> fileNames){
+        try{
+            List<DeleteObject> objectToDelete = fileNames.stream()
+                    .map(DeleteObject::new)
+                    .toList();
+            RemoveObjectsArgs args = RemoveObjectsArgs.builder()
+                    .bucket(bucketName)
+                    .objects(objectToDelete)
+                    .build();
+            Iterable<Result<DeleteError>> results = minioClient.removeObjects(args);
+            for (Result<DeleteError> result : results) {
+                DeleteError error = result.get();
+                log.error("Error deleting object: {}", error.objectName());
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return false;
+        }
+    }
+
 }
