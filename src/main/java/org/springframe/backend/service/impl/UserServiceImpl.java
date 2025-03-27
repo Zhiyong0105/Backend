@@ -5,6 +5,7 @@ import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.dto.UserUpdateDTO;
 import org.springframe.backend.domain.entity.LoginUser;
 import org.springframe.backend.domain.entity.User;
+import org.springframe.backend.domain.vo.PageVo;
 import org.springframe.backend.domain.vo.UserListVO;
 import org.springframe.backend.enums.ResponseEnum;
 import org.springframe.backend.repository.UserRepository;
@@ -14,11 +15,15 @@ import org.springframe.backend.utils.ResponseResult;
 import org.springframe.backend.utils.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,12 +116,33 @@ public class UserServiceImpl implements IUserService {
 
     }
 
+    @Override
+    public PageVo<List<UserListVO>> getUsersList(Integer pageNum, Integer pageSize) {
+        // 1. 使用分页查询来查找用户
+        Pageable pageable = PageRequest.of(pageNum-1, pageSize);
+
+        // 2. 查询用户
+        Page<User> users = userRepository.findAll(pageable);
+
+        // 3. 初步转化为List形式
+        List<User> list = users.getContent();
+
+        // 4. 用stream流来实现简化操作
+        List<UserListVO> userListVOS = list.stream()
+                .map(user -> {
+                    UserListVO userListVO = new UserListVO();
+                    BeanUtils.copyProperties(user, userListVO);
+                    return userListVO;
+                })
+                .toList();
+
+        return new PageVo<>(userListVOS, users.getTotalElements());
+    }
 
 
     @Override
     public UserDetails loadUserByUsername(String text) throws UsernameNotFoundException {
-        User user = new User();
-        user = userRepository.findByUsernameOrEmail(text)
+        User user = userRepository.findByUsernameOrEmail(text)
                 .orElseThrow(() -> new UsernameNotFoundException(ResponseEnum.LOGIN_FAIL.getMsg()));
         return new LoginUser(user, null);
     }

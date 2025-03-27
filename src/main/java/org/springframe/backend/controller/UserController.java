@@ -4,10 +4,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframe.backend.domain.dto.UserDTO;
 import org.springframe.backend.domain.dto.UserRegisterDTO;
 import org.springframe.backend.domain.dto.UserUpdateDTO;
+import org.springframe.backend.domain.vo.PageVo;
 import org.springframe.backend.domain.vo.UserListVO;
 import org.springframe.backend.service.impl.CustomOAuth2UserService;
 import org.springframe.backend.service.impl.UserServiceImpl;
@@ -57,6 +59,14 @@ public class UserController {
     @GetMapping("/admin/auth/get/users")
     public ResponseResult<List<UserListVO>> getUsers(@RequestParam("ids") List<Integer> ids){
         return ControllerUtils.messageHandler(()->userService.getUsers(ids));
+    }
+
+    @GetMapping("/admin/auth/get/listUsers")
+    public ResponseResult<PageVo<List<UserListVO>>> getListUsers(
+            @NotNull Integer pageSize,
+            @NotNull Integer pageNum
+    ){
+        return ControllerUtils.messageHandler(() -> userService.getUsersList(pageNum,pageSize));
     }
 
 

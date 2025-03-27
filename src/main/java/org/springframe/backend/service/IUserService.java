@@ -24,4 +24,6 @@ public interface IUserService extends UserDetailsService {
 
     List<UserListVO> getUsers(List<Integer> ids);
     ResponseResult<Void> userUpdate(UserUpdateDTO userUpdateDTO);
+
+    PageVo<List<UserListVO>> getUsersList(Integer pageNum, Integer pageSize);
 }

@@ -70,15 +70,6 @@ public class SecurityHandler {
         WebUtil.renderString(response,ResponseResult.LoginError(ResponseEnum.LOGIN_FAIL.getCode(), null,ResponseEnum.LOGIN_FAIL.getMsg()).asJsonString());
     }
 
-    public void onAccessDeny(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            AccessDeniedException exception
-    ){
-        WebUtil.renderString(response,ResponseResult.Fail().asJsonString());
-    }
-
-
     public void onUnAuthenticated(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -122,5 +113,13 @@ public class SecurityHandler {
         cookie.setSecure(true);
         response.addCookie(cookie);
         response.sendRedirect("http://localhost:5173/article");
+    }
+
+    public void onAccessDeny(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            AccessDeniedException exception
+    ){
+        WebUtil.renderString(response,ResponseResult.error(ResponseEnum.NO_PERMISSION.getCode(),ResponseEnum.NO_PERMISSION.getMsg()).asJsonString());
     }
 }

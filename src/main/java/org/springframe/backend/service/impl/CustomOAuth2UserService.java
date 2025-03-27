@@ -38,7 +38,6 @@ import java.util.Map;
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
-    private final RedisCache redisCache;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 

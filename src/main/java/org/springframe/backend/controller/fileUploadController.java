@@ -34,4 +34,9 @@ public class fileUploadController {
     public ResponseResult<List<String>> listFile(){
         return ResponseResult.Success(fileUploadUtils.listFiles());
     }
+
+    @DeleteMapping("/delete/files")
+    public ResponseResult<Boolean> deleteFile(List<String> fileName){
+        return ResponseResult.Success(fileUploadUtils.deleteFiles(fileName));
+    }
 }
