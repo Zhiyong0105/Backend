@@ -60,7 +60,7 @@ public class SecurityConfig  {
 
                 )
                 .oauth2Login(oauth ->oauth
-                        .loginPage(SecurityConst.GITHUB_LOGIN)
+//                        .loginPage(SecurityConst.GITHUB_LOGIN)
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
