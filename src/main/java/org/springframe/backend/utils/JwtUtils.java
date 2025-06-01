@@ -8,6 +8,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframe.backend.constants.RedisConst;
@@ -24,7 +25,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
+@Slf4j
 @Component
 public class JwtUtils {
     @Value("${spring.security.jwt.key}$")
@@ -65,7 +66,10 @@ public class JwtUtils {
                 .withExpiresAt(expire)
                 .withIssuedAt(now)
                 .sign(algorithm);
-         redisCache.setCacheObject(RedisConst.JWT_WHITE_LIST + uuid,jwt,(int) (expire.getTime()- now.getTime()), TimeUnit.MINUTES);
+        long durationMillis = expire.getTime() - now.getTime();
+        int durationMinutes = (int) (durationMillis / 1000 / 60 ); // 转成分钟
+        redisCache.setCacheObject(RedisConst.JWT_WHITE_LIST + uuid,jwt,durationMinutes, TimeUnit.SECONDS);
+         log.info("过期时间{} min",durationMinutes);
          return jwt;
     }
 
@@ -86,15 +90,6 @@ public class JwtUtils {
         }catch (JWTVerificationException e){
             e.printStackTrace();
             return false;
-        }
-    }
-    public DecodedJWT getJwt(String token) {
-        try {
-            JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(key)).build();
-            return jwtVerifier.verify(token);
-        } catch (JWTVerificationException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 

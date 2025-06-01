@@ -3,6 +3,7 @@ package org.springframe.backend.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import org.springframe.backend.annotation.AccessLimit;
 import org.springframe.backend.domain.dto.ArticleDTO;
 import org.springframe.backend.domain.vo.ArticleDetailVo;
 import org.springframe.backend.domain.vo.ArticleVo;
@@ -23,6 +24,7 @@ public class ArticleController {
     @Autowired
     private ArticleServiceImpl articleService;
 
+    @AccessLimit(seconds = 60,maxCount = 10)
     @GetMapping("/list")
     public ResponseResult<PageVo<List<ArticleVo>>> list(
              @NotNull Integer pageNum,
